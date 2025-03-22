@@ -1,6 +1,7 @@
 import  express, { request }  from "express";
 import dotenv from 'dotenv';
 import mongoose from "mongoose";
+import transactionroute from "./routes/transactionroute.js"
 
 dotenv.config();
 const mongourl=process.env.mongourl;
@@ -8,6 +9,8 @@ const PORT=process.env.PORT;
 
 
 const app = express();
+app.use(express.json());
+
 app.get('/',(request,response)=>{
     console.log(request);
     return response.status(234).send("Hello OM");
@@ -23,3 +26,4 @@ mongoose.connect(mongourl).then(()=>{
     console.log(err);
 })
 
+app.use('/api/transactions',transactionroute)
