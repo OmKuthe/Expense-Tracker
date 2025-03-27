@@ -1,4 +1,4 @@
-import  express, { request }  from "express";
+import  express from "express";
 import dotenv from 'dotenv';
 import mongoose from "mongoose";
 import transactionroute from "./routes/transactionroute.js"
