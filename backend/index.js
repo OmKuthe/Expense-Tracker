@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import mongoose from "mongoose";
 import transactionroute from "./routes/transactionroute.js"
 import router from "./routes/getalltrans.js";
+import cors from 'cors'
 
 dotenv.config();
 const mongourl=process.env.mongourl;
@@ -11,6 +12,7 @@ const PORT=process.env.PORT;
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.get('/',(request,response)=>{
     console.log(request);
