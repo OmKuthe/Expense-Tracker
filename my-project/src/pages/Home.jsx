@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect }  from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
@@ -25,7 +25,6 @@ const Home = () => {
     setError('');
 
     if (isLogin) {
-      // Login logic
       if (!formData.email || !formData.password) {
         setError('Email and password are required');
         return;
@@ -46,13 +45,13 @@ const Home = () => {
         if (!response.ok) {
           throw new Error(data.message || 'Login failed');
         }
+        localStorage.setItem('token', data.token); // Add this line
 
         navigate('/dashboard');
       } catch (err) {
         setError(err.message);
       }
     } else {
-      // Signup logic
       if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
         setError('All fields are required');
         return;
@@ -80,9 +79,9 @@ const Home = () => {
           throw new Error(data.message || 'Signup failed');
         }
 
-        setIsLogin(true); // Switch to login after successful signup
-        setError(''); // Clear any previous errors
-        setFormData(prev => ({ ...prev, password: '', confirmPassword: '' })); // Clear password fields
+        setIsLogin(true); 
+        setError(''); 
+        setFormData(prev => ({ ...prev, password: '', confirmPassword: '' }));
       } catch (err) {
         setError(err.message);
       }

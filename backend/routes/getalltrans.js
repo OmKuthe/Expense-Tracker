@@ -12,4 +12,5 @@ try{
 }
 })
 
-export default  router;
+const get = router;
+export default  get;

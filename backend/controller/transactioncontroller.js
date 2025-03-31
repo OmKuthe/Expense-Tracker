@@ -1,28 +1,74 @@
 import csv from "csv-parser";
-import fs from "fs"
-import transaction from "../models/transaction.js"
+import fs from "fs";
+import transaction from "../models/transaction.js";
 
 const uploadCSV = async (req, res) => {
+    // 1. Validate file
+    if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+    }
+    if (req.file.mimetype !== 'text/csv') {
+        return res.status(400).json({ error: 'Only CSV files are allowed' });
+    }
+
     const results = [];
+    const userId = req.user.id;
 
     fs.createReadStream(req.file.path)
-      .pipe(csv())
-      .on('data', (row) => {
-          const { formattedDate, Details, Type, Amount} = row;
-          results.push({ 
-              formattedDate: new Date(formattedDate), 
-              Details: Details, 
-              Type: Type, 
-              Amount: parseFloat(Amount)
-          });
-      })
-      .on('end', async () => {
-          try {
-              await transaction.insertMany(results);
-              res.status(201).json({ message: 'Transactions uploaded successfully!' });
-          } catch (error) {
-              res.status(500).json({ error: 'Failed to upload transactions.' });
-          }
-      });
-}
+        .pipe(csv())
+        .on('data', (row) => {
+            try {
+                const { formattedDate, Details, Type, Amount } = row;
+                
+                // 2. Handle potential parsing errors
+                const parsedDate = isNaN(new Date(formattedDate)) 
+                    ? new Date() 
+                    : new Date(formattedDate);
+                
+                const parsedAmount = isNaN(parseFloat(Amount)) 
+                    ? 0 
+                    : parseFloat(Amount);
+
+                results.push({
+                    userId,
+                    formattedDate: parsedDate,
+                    Details: Details || '',
+                    Type: Type || 'Other',
+                    Amount: parsedAmount
+                });
+            } catch (rowError) {
+                console.error('Error processing row:', rowError);
+            }
+        })
+        .on('error', (error) => {
+            // 3. Handle stream errors
+            fs.unlink(req.file.path, () => {});
+            res.status(500).json({ error: 'Error processing CSV file' });
+        })
+        .on('end', async () => {
+            try {
+                if (results.length === 0) {
+                    throw new Error('No valid transactions found');
+                }
+                
+                await transaction.insertMany(results);
+                
+                // 4. Clean up file
+                fs.unlink(req.file.path, (err) => {
+                    if (err) console.error('Error deleting file:', err);
+                });
+                
+                res.status(201).json({ 
+                    message: `${results.length} transactions uploaded successfully!` 
+                });
+            } catch (error) {
+                fs.unlink(req.file.path, () => {});
+                console.error('Database error:', error);
+                res.status(500).json({ 
+                    error: 'Failed to upload transactions',
+                    details: error.message 
+                });
+            }
+        });
+};
 export default uploadCSV

@@ -2,10 +2,11 @@ import  express from "express";
 import dotenv from 'dotenv';
 import mongoose from "mongoose";
 import transactionroute from "./routes/transactionroute.js"
-import router from "./routes/getalltrans.js";
+import get from "./routes/getalltrans.js";
 import cors from 'cors'
 import signup from "./routes/Signup.js";
 import login from "./routes/Login.js";
+import dashboard from "./routes/dashboard.js";
 
 dotenv.config();
 const mongourl=process.env.mongourl;
@@ -33,7 +34,9 @@ mongoose.connect(mongourl).then(()=>{
 
 app.use('/api/transactions',transactionroute);
 
-app.use('/api/transactions',router);
+// app.use('/api/transactions',dashboard);
+
+app.use('/api/transactions',get);
 
 app.use('/api',signup);
 
