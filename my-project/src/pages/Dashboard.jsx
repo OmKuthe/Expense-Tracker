@@ -1,9 +1,44 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Dashboard = () => {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState('');
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Consolidated fetch function
+  const fetchTransactions = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+
+      const response = await fetch('http://localhost:3000/api/transactions/get', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch transactions');
+      
+      const data = await response.json();
+      setTransactions(data);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -14,49 +49,38 @@ const Dashboard = () => {
       setMessage('Please select a file first');
       return;
     }
-  
+
     const formData = new FormData();
-    formData.append('csvFile', file); // Must match backend's expected field name
-  
+    formData.append('csvFile', file);
+
     try {
       setUploading(true);
       setMessage('');
-  
-      // 1. Get token from storage
-      const token = localStorage.getItem('token') || 
-                   sessionStorage.getItem('token');
-      
+      const token = localStorage.getItem('token');
+
       if (!token) {
-        throw new Error('Please login first - no token found');
+        throw new Error('Please login first');
       }
-  
-      // 2. Make the request
-      const response = await fetch('http://localhost:3000/api/transactions/upload', {
+
+      // Upload file
+      const uploadResponse = await fetch('http://localhost:3000/api/transactions/upload', {
         method: 'POST',
         body: formData,
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-  
-      if (!response.ok) {
-        const errorData = await response.json();
+
+      if (!uploadResponse.ok) {
+        const errorData = await uploadResponse.json();
         throw new Error(errorData.message || 'Upload failed');
       }
-  
-      // 3. Handle success
-      const data = await response.json();
+
       setMessage('File uploaded successfully!');
       
       // Refresh transactions
-      const refreshResponse = await fetch('http://localhost:3000/api/transactions/get', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      const refreshData = await refreshResponse.json();
-      setTransactions(refreshData);
-  
+      await fetchTransactions(); // Use the same fetch function
+
     } catch (error) {
       console.error('Upload error:', error);
       setMessage(error.message);
@@ -64,33 +88,13 @@ const Dashboard = () => {
       setUploading(false);
     }
   };
-  const [transactions, setTransactions] = useState([]);
-        const [loading, setLoading] = useState(true);
-        const [error, setError] = useState(null);
-      
-        useEffect(() => {
-          const fetchTransactions = async () => {
-            try {
-              const response = await fetch('http://localhost:3000/api/transactions/get');
-              if (!response.ok) throw new Error('Failed to fetch');
-              const data = await response.json();
-              setTransactions(data);
-            } catch (err) {
-              setError(err.message);
-            } finally {
-              setLoading(false);
-            }
-          };
-      
-          fetchTransactions();
-        }, []);
-      
-        if (loading) return <div>Loading...</div>;
-        if (error) return <div>Error: {error}</div>;
+
+  if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  if (error) return <div className="min-h-screen flex items-center justify-center text-red-600">Error: {error}</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center p-4">
+            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">CSV File Upload</h1>
         
         <div className="space-y-4">
@@ -175,7 +179,6 @@ const Dashboard = () => {
       </div>
     </div>
     </div>
-    
   );
 };
 

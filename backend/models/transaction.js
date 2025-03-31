@@ -4,7 +4,7 @@ const transactionschema=new mongoose.Schema({
     userId: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: "User", 
-        required: false 
+        required: true 
     },
     formattedDate:{type:Date,required:true},
     Details:{type:String,required:true},
