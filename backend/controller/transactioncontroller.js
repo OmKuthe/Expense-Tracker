@@ -3,7 +3,6 @@ import fs from "fs";
 import transaction from "../models/transaction.js";
 
 const uploadCSV = async (req, res) => {
-    // 1. Validate file
     if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
     }
@@ -19,8 +18,7 @@ const uploadCSV = async (req, res) => {
         .on('data', (row) => {
             try {
                 const { formattedDate, Details, Type, Amount } = row;
-                
-                // 2. Handle potential parsing errors
+            
                 const parsedDate = isNaN(new Date(formattedDate)) 
                     ? new Date() 
                     : new Date(formattedDate);
@@ -41,7 +39,6 @@ const uploadCSV = async (req, res) => {
             }
         })
         .on('error', (error) => {
-            // 3. Handle stream errors
             fs.unlink(req.file.path, () => {});
             res.status(500).json({ error: 'Error processing CSV file' });
         })
@@ -52,8 +49,7 @@ const uploadCSV = async (req, res) => {
                 }
                 
                 await transaction.insertMany(results);
-                
-                // 4. Clean up file
+           
                 fs.unlink(req.file.path, (err) => {
                     if (err) console.error('Error deleting file:', err);
                 });

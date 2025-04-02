@@ -1,5 +1,5 @@
 import React, { useState,useEffect }  from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const Home = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -45,9 +45,9 @@ const Home = () => {
         if (!response.ok) {
           throw new Error(data.message || 'Login failed');
         }
-        localStorage.setItem('token', data.token); // Add this line
+        localStorage.setItem('token', data.token);
 
-        navigate('/dashboard');
+        navigate(`/dashboard/${data.userId}`);
       } catch (err) {
         setError(err.message);
       }

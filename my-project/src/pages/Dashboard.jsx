@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 
 const Dashboard = () => {
   const [file, setFile] = useState(null);
@@ -8,7 +10,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Consolidated fetch function
   const fetchTransactions = async () => {
     try {
       setLoading(true);
@@ -62,7 +63,6 @@ const Dashboard = () => {
         throw new Error('Please login first');
       }
 
-      // Upload file
       const uploadResponse = await fetch('http://localhost:3000/api/transactions/upload', {
         method: 'POST',
         body: formData,
@@ -77,15 +77,30 @@ const Dashboard = () => {
       }
 
       setMessage('File uploaded successfully!');
-      
-      // Refresh transactions
-      await fetchTransactions(); // Use the same fetch function
-
+      await fetchTransactions();
     } catch (error) {
       console.error('Upload error:', error);
       setMessage(error.message);
     } finally {
       setUploading(false);
+    }
+  };
+
+  const {userId} = useParams(); 
+  console.log("User ID:", userId);
+  const handleDelete = async () => {
+    try {
+      if (!userId) {
+        alert("No user ID found!");
+        return;
+      }
+      const response = await axios.delete(
+        `http://localhost:3000/api/delete/${userId}`
+      );
+      alert(`Deleted transactions Sucessfully!`);
+      setTransactions([]); 
+    } catch (error) {
+      alert('Delete failed: ' + (error.response?.data?.message || error.message));
     }
   };
 
@@ -178,6 +193,12 @@ const Dashboard = () => {
         </div>
       </div>
     </div>
+    <button
+      onClick={handleDelete}
+      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+    >
+      Delete My Transactions
+    </button>
     </div>
   );
 };
