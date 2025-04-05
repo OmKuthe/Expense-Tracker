@@ -204,3 +204,56 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+<div className="bg-white p-4 rounded-lg shadow-sm mb-6 grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+          <select
+            name="type"
+            value={filters.type}
+            onChange={handleFilterChange}
+            className="w-full p-2 border rounded-md"
+          >
+            <option value="ALL">All Types</option>
+            <option value="CREDIT">Income</option>
+            <option value="DEBIT">Expense</option>
+          </select>
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+          <select
+            name="category"
+            value={filters.category}
+            onChange={handleFilterChange}
+            className="w-full p-2 border rounded-md"
+          >
+            <option value="ALL">All Categories</option>
+            {categories.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">From Date</label>
+          <input
+            type="date"
+            name="startDate"
+            value={filters.startDate}
+            onChange={handleFilterChange}
+            className="w-full p-2 border rounded-md"
+          />
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">To Date</label>
+          <input
+            type="date"
+            name="endDate"
+            value={filters.endDate}
+            onChange={handleFilterChange}
+            className="w-full p-2 border rounded-md"
+          />
+        </div>
+      </div>
