@@ -59,11 +59,38 @@ const Add= () => {
         category: ''
       });
       
-      const handleManualSubmit = (e) => {
+      const handleManualSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission here
-        console.log('Manual transaction:', manualData);
-        // API call or state update logic here
+        
+        try {
+          const transactionData = {
+            formattedDate: manualData.formattedDate || new Date().toISOString().split('T')[0],
+            category: manualData.category || "Uncategorized",
+            Details: manualData.Details,
+            Type: manualData.Type?.toUpperCase(),
+            Amount: manualData.Amount
+          };
+          console.log('Submitting transaction:', transactionData);
+          const response = await fetch(`http://localhost:3000/api/putone/${userId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(transactionData)
+          });
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to submit transaction');
+          }
+      
+          const result = await response.json();
+          console.log('Transaction successful:', result);
+          alert('Transaction added successfully!');
+          
+        } catch (error) {
+          console.error('Transaction submission error:', error);
+          alert(`Error: ${error.message}`);
+        }
       };
 
 

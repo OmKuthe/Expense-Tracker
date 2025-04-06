@@ -7,6 +7,7 @@ import cors from 'cors'
 import signup from "./routes/Signup.js";
 import login from "./routes/Login.js";
 import delete_all from "./routes/delete.js";
+import putone from "./routes/putone.js";
 
 dotenv.config();
 const mongourl=process.env.mongourl;
@@ -41,3 +42,5 @@ app.use('/api',signup);
 app.use('/api',login);
 
 app.use('/api',delete_all);
+
+app.use('/api',putone);
