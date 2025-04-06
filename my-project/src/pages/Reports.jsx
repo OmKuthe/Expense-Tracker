@@ -1,49 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import Sidebar from '../assets/Sidebar';
+import axios from 'axios';
 
 const Reports = () => {
-  const [transactions, setTransactions] = useState([
-    { 
-      _id: 1,
-      formattedDate: '2023-06-15',
-      Details: 'Grocery shopping at Walmart',
-      Type: 'DEBIT',
-      Amount: 85.50,
-      Category: 'Food'
-    },
-    { 
-      _id: 2,
-      formattedDate: '2023-06-14',
-      Details: 'Monthly salary',
-      Type: 'CREDIT',
-      Amount: 2500.00,
-      Category: 'Income'
-    },
-    { 
-      _id: 3,
-      formattedDate: '2023-06-12',
-      Details: 'Electric bill payment',
-      Type: 'DEBIT',
-      Amount: 120.75,
-      Category: 'Utilities'
-    },
-    { 
-      _id: 4,
-      formattedDate: '2023-06-10',
-      Details: 'Dinner with friends',
-      Type: 'DEBIT',
-      Amount: 45.80,
-      Category: 'Dining'
-    },
-    { 
-      _id: 5,
-      formattedDate: '2023-06-05',
-      Details: 'Freelance project payment',
-      Type: 'CREDIT',
-      Amount: 800.00,
-      Category: 'Income'
-    }
-  ]);
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [filters, setFilters] = useState({
     type: 'ALL',
     category: 'ALL',
@@ -65,11 +28,58 @@ const Reports = () => {
       (!filters.endDate || new Date(txn.formattedDate) <= new Date(filters.endDate))
     );
   });
-  const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete all transactions?')) {
-      setTransactions([]);
+  const fetchTransactions = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+
+      const response = await fetch('http://localhost:3000/api/transactions/get', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch transactions');
+      
+      const data = await response.json();
+      setTransactions(data);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
+
+  const {userId} = useParams(); 
+  console.log("User ID:", userId);
+  const handleDelete = async () => {
+    try {
+      if (!userId) {
+        alert("No user ID found!");
+        return;
+      }
+      const response = await axios.delete(
+        `http://localhost:3000/api/delete/${userId}`
+      );
+      alert(`Deleted transactions Sucessfully!`);
+      setTransactions([]); 
+    } catch (error) {
+      alert('Delete failed: ' + (error.response?.data?.message || error.message));
+    }
+  };
+
+  if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  if (error) return <div className="min-h-screen flex items-center justify-center text-red-600">Error: {error}</div>;
+
 
   const categories = [...new Set(transactions.map(txn => txn.Category))];
 

@@ -45,8 +45,11 @@ const Login = () => {
         if (!response.ok) {
           throw new Error(data.message || 'Login failed');
         }
-        localStorage.setItem('token', data.token);
-
+        const userData = {
+          token: data.token,
+          userId: data.userId, 
+        };      
+        localStorage.setItem('user', JSON.stringify(userData)); 
         navigate(`/home/${data.userId}`);
       } catch (err) {
         setError(err.message);

@@ -10,7 +10,8 @@ router.delete('/delete/:id',async (request,response)=>{
         if(!userid){
             response.status(401).send({message:"User Id required"});
         }
-        const result = await transaction.deleteMany({ userId: new mongoose.Types.ObjectId(userid) });
+        console.log(userid);
+        const result= await transaction.deleteMany({ userId: new mongoose.Types.ObjectId(userid) });
         if(!result){
             return response.status(404).send({message:"transactions deletion failed"});
         }else if (result.deletedCount==0){

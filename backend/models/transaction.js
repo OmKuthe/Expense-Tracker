@@ -7,6 +7,11 @@ const transactionschema=new mongoose.Schema({
         required: true 
     },
     formattedDate:{type:Date,required:true},
+    category: {
+        type: String,
+        default: "Uncategorized",
+        trim: true,
+    },
     Details:{type:String,required:true},
     Type:{type:String,enum:["CREDIT","DEBIT"],required:true},
     Amount:{type:Number,required:true}
