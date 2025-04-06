@@ -1,9 +1,9 @@
 import React from "react"
 import {Routes,Route} from "react-router-dom"
 import Login from "./pages/Login"
-// import Dashboard from "./pages/Dashboard"
 import Home from "./pages/Home"
 import Reports from "./pages/Reports"
+import Add from "./pages/Add"
 
 export default function App() {
   return (
@@ -11,7 +11,7 @@ export default function App() {
       <Route path="/" element={<Login />}/>
       <Route path='/home/:userId' element={<Home />}/>
       <Route path='/reports/:userId' element={<Reports/>}/>
-      {/* <Route path='/dashboard/:userId' element={<Dashboard/>}/> */}
+      <Route path='/add/:userId' element={<Add/>}/>
     </Routes>
   )
 }
