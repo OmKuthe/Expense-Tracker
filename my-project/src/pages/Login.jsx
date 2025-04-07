@@ -49,6 +49,10 @@ const Login = () => {
           token: data.token,
           userId: data.userId, 
         };      
+        if (response.status === 401 && data.message === 'Token expired. Please login again.') {
+          localStorage.removeItem('user');
+          navigate('/');
+        }
         localStorage.setItem('user', JSON.stringify(userData)); 
         navigate(`/home/${data.userId}`);
       } catch (err) {

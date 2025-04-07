@@ -8,7 +8,6 @@ import { Users } from "../models/userModel.js";
 
 router.post('/putone/:userId', async (req, res) => {
     try {
-        // 1. Validate and convert userId
         let userId;
         try {
             if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
@@ -21,29 +20,22 @@ router.post('/putone/:userId', async (req, res) => {
         } catch (err) {
             return res.status(400).json({ message: "Invalid user ID" });
         }
-
-        // 2. Verify user exists
         const user = await mongoose.model('Users').findById(userId).lean();
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-
-        // 3. Process transaction
         const transactionData = {
             userId,
             formattedDate: new Date(req.body.formattedDate),
             category: req.body.category || "Uncategorized",
             Details: req.body.Details,
-            Type: req.body.Type.toUpperCase(),
+            Type: req.body.Type,
             Amount: req.body.Amount
         };
-
-        // 4. Validate against schema
         const Transaction = mongoose.model('transaction');
         const trans = new Transaction(transactionData);
-        await trans.validate(); // Explicit validation
+        await trans.validate();
 
-        // 5. Save to DB
         const savedTrans = await trans.save();
         return res.status(201).json(savedTrans);
 

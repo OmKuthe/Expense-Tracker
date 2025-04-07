@@ -23,7 +23,7 @@ const Reports = () => {
   const filteredTransactions = transactions.filter(txn => {
     return (
       (filters.type === 'ALL' || txn.Type === filters.type) &&
-      (filters.category === 'ALL' || txn.Category === filters.category) &&
+      (filters.category === 'ALL' || txn.category === filters.category) &&
       (!filters.startDate || new Date(txn.formattedDate) >= new Date(filters.startDate)) &&
       (!filters.endDate || new Date(txn.formattedDate) <= new Date(filters.endDate))
     );
@@ -31,7 +31,8 @@ const Reports = () => {
   const fetchTransactions = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
+      const user = JSON.parse(localStorage.getItem('user'));
+      const token = user?.token;
       
       if (!token) {
         throw new Error('Authentication required');
@@ -81,7 +82,7 @@ const Reports = () => {
   if (error) return <div className="min-h-screen flex items-center justify-center text-red-600">Error: {error}</div>;
 
 
-  const categories = [...new Set(transactions.map(txn => txn.Category))];
+  const categories = [...new Set(transactions.map(txn => txn.category))];
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -177,7 +178,7 @@ const Reports = () => {
                       {txn.Details}
                     </div>
                     <div className="col-span-2 text-gray-600">
-                      {txn.Category}
+                      {txn.category}
                     </div>
                     <div className="col-span-1">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${

@@ -21,11 +21,16 @@ const authenticate = async (request, response, next) => {
     next();
   } catch (error) {
     console.error('Authentication error:', error);
-    return response.status(401).json({ 
-      message: error.name === 'JsonWebTokenError' 
-        ? "Invalid token" 
-        : "Please authenticate"
-    });
+
+    if (error.name === 'TokenExpiredError') {
+      return response.status(401).json({ message: 'Token expired. Please login again.' });
+    }
+  
+    if (error.name === 'JsonWebTokenError') {
+      return response.status(401).json({ message: 'Invalid token' });
+    }
+  
+    return response.status(401).json({ message: 'Please authenticate' });
   }
 };
 
