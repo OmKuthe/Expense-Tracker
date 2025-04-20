@@ -1,56 +1,60 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis,
   Tooltip, Legend, LineChart, Line, CartesianGrid, ResponsiveContainer
 } from 'recharts';
 import Sidebar from '../assets/Sidebar';
 
-const COLORS = [
-  '#00B894', // Vibrant teal
-  '#FF6B6B', // Bright coral
-  '#6C5CE7', // Deep purple
-  '#00CEC9', // Bright turquoise
-  '#FDCB6E', // Vibrant yellow
-  '#E84393'  // Pink
-];
-
-const dashboardData = {
-  income: 50000,
-  expenses: 35000,
-  categories: [
-    { name: 'Food', value: 10000 },
-    { name: 'Rent', value: 12000 },
-    { name: 'Transport', value: 4000 },
-    { name: 'Entertainment', value: 5000 },
-    { name: 'Utilities', value: 3000 },
-    { name: 'Others', value: 1000 },
-  ],
-  monthlyTrends: [
-    { month: 'Jan', income: 40000, expenses: 30000 },
-    { month: 'Feb', income: 45000, expenses: 32000 },
-    { month: 'Mar', income: 50000, expenses: 35000 },
-    { month: 'Apr', income: 48000, expenses: 40000 },
-  ],
-  weeklyExpenses: [
-    { day: 'Mon', expenses: 1500 },
-    { day: 'Tue', expenses: 1000 },
-    { day: 'Wed', expenses: 1200 },
-    { day: 'Thu', expenses: 800 },
-    { day: 'Fri', expenses: 2000 },
-    { day: 'Sat', expenses: 2500 },
-    { day: 'Sun', expenses: 1800 },
-  ],
-};
+const COLORS = ['#00B894', '#FF6B6B', '#6C5CE7', '#00CEC9', '#FDCB6E', '#E84393'];
 
 const Analytics = () => {
-  const { income, expenses, categories, monthlyTrends, weeklyExpenses } = dashboardData;
+  const [data, setData] = useState({
+    income: 0,
+    expenses: 0,
+    categories: [],
+    monthlyTrends: [],
+    weeklyExpenses: []
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  useEffect(() => {
+    const fetchData = async () => {
 
-  
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const token = user?.token;
+        const response = await fetch('http://localhost:3000/api/transactions/summary', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (!response.ok) throw new Error('Failed to fetch data');
+        
+        const result = await response.json();
+        setData(result);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  if (error) return <div className="flex justify-center items-center h-screen text-red-500">Error: {error}</div>;
+
+  // Destructure data for cleaner JSX
+  const { income, expenses, categories, monthlyTrends, weeklyExpenses } = data;
+
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
       {/* Sidebar */}
         <Sidebar />
+
 
       {/* Content Area */}
       <div className="flex-1 overflow-y-auto p-6 md:p-8">

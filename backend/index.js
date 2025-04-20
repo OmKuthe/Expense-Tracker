@@ -8,6 +8,8 @@ import signup from "./routes/Signup.js";
 import login from "./routes/Login.js";
 import delete_all from "./routes/delete.js";
 import putone from "./routes/putone.js";
+import fetch from "./routes/fetch.js";
+import summary from "./routes/analytics.js";
 
 dotenv.config();
 const mongourl=process.env.mongourl;
@@ -44,3 +46,7 @@ app.use('/api',login);
 app.use('/api',delete_all);
 
 app.use('/api',putone);
+
+app.use('/api/transactions',fetch);
+
+app.use('/api/transactions',summary);
