@@ -19,6 +19,15 @@ const Login = () => {
       [name]: value
     }));
   };
+  const isTokenValid = (token) => {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.exp * 1000 > Date.now(); // Check expiry time
+    } catch {
+      return false;
+    }
+  };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,21 +48,26 @@ const Login = () => {
             password: formData.password
           })
         });
-
+      
         const data = await response.json();
-
+      
         if (!response.ok) {
+          if (response.status === 401) {
+            localStorage.removeItem('user');
+          }
           throw new Error(data.message || 'Login failed');
         }
-        const userData = {
+      
+        if (!isTokenValid(data.token)) {
+          throw new Error("Server returned expired token");
+        }
+      
+        localStorage.removeItem('user');
+        localStorage.setItem('user', JSON.stringify({
           token: data.token,
           userId: data.userId, 
-        };      
-        if (response.status === 401 && data.message === 'Token expired. Please login again.') {
-          localStorage.removeItem('user');
-          navigate('/');
-        }
-        localStorage.setItem('user', JSON.stringify(userData)); 
+        }));
+        
         navigate(`/home/${data.userId}`);
       } catch (err) {
         setError(err.message);

@@ -16,9 +16,6 @@ const Sidebar = () => {
             <Link to={`/home/${userId}`} className="block">Home</Link>
           </li>
           <li className="p-2 hover:bg-indigo-600 rounded-lg">
-            <Link to={`/dashboard/${userId}`} className="block">Dashboard</Link>
-          </li>
-          <li className="p-2 hover:bg-indigo-600 rounded-lg">
             <Link to={`/analytics/${userId}`} className="block">Analytics</Link>
           </li>
           <li className="p-2 hover:bg-indigo-600 rounded-lg">

@@ -25,7 +25,8 @@ const Add = () => {
     try {
       setUploading(true);
       setMessage('');
-      const token = localStorage.getItem('token');
+      const user = JSON.parse(localStorage.getItem('user'));
+      const token = user?.token;
 
       if (!token) {
         throw new Error('Please login first');
