@@ -10,6 +10,7 @@ import delete_all from "./routes/delete.js";
 import putone from "./routes/putone.js";
 import fetch from "./routes/fetch.js";
 import summary from "./routes/analytics.js";
+import recent from "./routes/recent.js";
 
 dotenv.config();
 const mongourl=process.env.mongourl;
@@ -50,3 +51,5 @@ app.use('/api',putone);
 app.use('/api/transactions',fetch);
 
 app.use('/api/transactions',summary);
+
+app.use('/api/transactions',recent);
