@@ -8,6 +8,7 @@ const Add = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [message, setMessage] = useState('');
+  const [showInstructions, setShowInstructions] = useState(false);
   
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -118,45 +119,72 @@ const Add = () => {
         <div className="max-w-4xl mx-auto space-y-6">
           {/* CSV Upload Section */}
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h1 className="text-2xl font-bold text-gray-800 mb-4">CSV File Upload</h1>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Select CSV File
-                </label>
-                <input
-                  type="file"
-                  accept=".csv"
-                  onChange={handleFileChange}
-                  className="block w-full text-sm text-gray-500
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded-md file:border-0
-                    file:text-sm file:font-semibold
-                    file:bg-blue-50 file:text-blue-700
-                    hover:file:bg-blue-100"
-                />
+              <div className="flex items-center justify-between mb-4">
+                <h1 className="text-2xl font-bold text-gray-800">CSV File Upload</h1>
+                <button 
+                  onClick={() => setShowInstructions(!showInstructions)}
+                  className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                  aria-label="CSV format instructions"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </button>
               </div>
-              
-              <button
-                onClick={handleUpload}
-                disabled={uploading}
-                className={`w-full py-2 px-4 rounded-md text-white font-medium ${
-                  uploading ? 'bg-blue-300' : 'bg-blue-600 hover:bg-blue-700'
-                } transition-colors`}
-              >
-                {uploading ? 'Uploading...' : 'Upload CSV'}
-              </button>
-              
-              {message && (
-                <p className={`text-sm mt-2 ${
-                  message.includes('success') ? 'text-green-600' : 'text-red-600'
-                }`}>
-                  {message}
-                </p>
+
+              {showInstructions && (
+                <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <h3 className="font-medium text-blue-800 mb-2">CSV Format Requirements:</h3>
+                  <ul className="text-sm text-blue-700 list-disc pl-5 space-y-1">
+                    <li>First row must contain headers</li>
+                    <li>Required columns: formattedDate,Details,Type,Amount</li>
+                    <li>Date format: YYYY-MM-DD</li>
+                    <li>Type Should be CREDIT/DEBIT</li>
+                  </ul>
+                  {/* actual image*/}
+                  <div className="mt-3 p-2 bg-white border rounded">
+                    <p className="text-xs text-gray-500"><img src="/src/img/csv.png" alt="CSV format example" className="mt-3 border rounded" /></p>
+                  </div>
+                </div>
               )}
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Select CSV File
+                  </label>
+                  <input
+                    type="file"
+                    accept=".csv"
+                    onChange={handleFileChange}
+                    className="block w-full text-sm text-gray-500
+                      file:mr-4 file:py-2 file:px-4
+                      file:rounded-md file:border-0
+                      file:text-sm file:font-semibold
+                      file:bg-blue-50 file:text-blue-700
+                      hover:file:bg-blue-100"
+                  />
+                </div>
+                
+                <button
+                  onClick={handleUpload}
+                  disabled={uploading}
+                  className={`w-full py-2 px-4 rounded-md text-white font-medium ${
+                    uploading ? 'bg-blue-300' : 'bg-blue-600 hover:bg-blue-700'
+                  } transition-colors`}
+                >
+                  {uploading ? 'Uploading...' : 'Upload CSV'}
+                </button>
+                
+                {message && (
+                  <p className={`text-sm mt-2 ${
+                    message.includes('success') ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {message}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
 
           {/* Manual Transaction Form */}
           <div className="bg-white p-6 rounded-lg shadow-md">
