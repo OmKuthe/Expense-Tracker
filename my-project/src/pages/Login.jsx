@@ -65,7 +65,8 @@ const Login = () => {
         localStorage.removeItem('user');
         localStorage.setItem('user', JSON.stringify({
           token: data.token,
-          userId: data.userId, 
+          userId: data.userId,
+          user:data.user, 
         }));
         
         navigate(`/home/${data.userId}`);

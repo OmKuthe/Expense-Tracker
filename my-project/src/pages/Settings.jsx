@@ -3,7 +3,7 @@ import Sidebar from '../assets/Sidebar';
 
 const Settings = () => {
   const [formData, setFormData] = useState({
-    name: JSON.parse(localStorage.getItem('user'))?.name || 'User',
+    name: JSON.parse(localStorage.getItem('user'))?.user || 'User',
     currency: 'INR'
   });
 
@@ -18,7 +18,7 @@ const Settings = () => {
     e.preventDefault();
     // Save to localStorage or API
     const user = JSON.parse(localStorage.getItem('user'));
-    localStorage.setItem('user', JSON.stringify({ ...user, name: formData.name }));
+    localStorage.setItem('user', JSON.stringify({ ...user, user: formData.name }));
     alert('Settings saved!');
   };
 

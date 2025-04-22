@@ -36,7 +36,8 @@ router.post('/login', async (request, response) => {
         return response.status(200).send({
             message: "Login Successful",
             token,
-            userId:userExist._id 
+            userId:userExist._id ,
+            user:userExist.username
         });
 
     } catch (error) {
