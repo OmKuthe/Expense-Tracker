@@ -11,6 +11,8 @@ import putone from "./routes/putone.js";
 import fetch from "./routes/fetch.js";
 import summary from "./routes/analytics.js";
 import recent from "./routes/recent.js";
+import updatePass from "./routes/update.js";
+import deleteProfile from "./routes/deleteProfile.js";
 
 dotenv.config();
 const mongourl=process.env.mongourl;
@@ -53,3 +55,7 @@ app.use('/api/transactions',fetch);
 app.use('/api/transactions',summary);
 
 app.use('/api/transactions',recent);
+
+app.use('/api/users',updatePass);
+
+app.use('/api/users',deleteProfile);

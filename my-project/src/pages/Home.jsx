@@ -2,6 +2,14 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from '../assets/Sidebar';
 
 const Home = () => {
+  const [formData, setFormData] = useState({
+    name: JSON.parse(localStorage.getItem('user'))?.user || 'User',
+    language: 'en',
+    notifications: true,
+  });
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem('darkMode') === 'true' || false
+  );
   const [data, setData] = useState({
     income: 0,
     expenses: 0,

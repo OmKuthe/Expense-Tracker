@@ -3,6 +3,14 @@ import Sidebar from '../assets/Sidebar';
 import { Info, FileText, LogOut } from 'lucide-react';
 
 const Profile = () => {
+  const [formData, setFormData] = useState({
+    name: JSON.parse(localStorage.getItem('user'))?.user || 'User',
+    language: 'en',
+    notifications: true,
+  });
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem('darkMode') === 'true' || false
+  );
   const [showTnC, setShowTnC] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
 
@@ -17,11 +25,9 @@ const Profile = () => {
           {/* Left: User Summary */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 flex flex-col items-center text-center">
             <div className="w-24 h-24 rounded-full bg-indigo-500 text-white flex items-center justify-center text-2xl font-bold mb-4">
-              OM
+            {formData.name.charAt(0).toUpperCase()}
             </div>
-            <h2 className="text-xl font-semibold mb-1 dark:text-white">Om</h2>
-            <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">om@example.com</p>
-            
+            <h2 className="text-xl font-semibold mb-1 dark:text-white">{formData.name}</h2>  
             <div className="w-full border-t pt-4 dark:border-gray-700">
               <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-2">App Usage</h3>
               <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">

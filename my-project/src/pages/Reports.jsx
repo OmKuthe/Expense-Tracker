@@ -4,6 +4,14 @@ import Sidebar from '../assets/Sidebar';
 import axios from 'axios';
 
 const Reports = () => {
+  const [formData, setFormData] = useState({
+    name: JSON.parse(localStorage.getItem('user'))?.user || 'User',
+    language: 'en',
+    notifications: true,
+  });
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem('darkMode') === 'true' || false
+  );
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -205,9 +213,6 @@ const Reports = () => {
   
         {/* Export/Delete Buttons */}
         <div className="flex justify-end space-x-4">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Export to CSV
-          </button>
           <button
             onClick={handleDelete}
             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
