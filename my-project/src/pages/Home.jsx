@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Sidebar from '../assets/Sidebar';
 
 const Home = () => {
   const [formData, setFormData] = useState({
@@ -7,9 +6,7 @@ const Home = () => {
     language: 'en',
     notifications: true,
   });
-  const [darkMode, setDarkMode] = useState(
-    localStorage.getItem('darkMode') === 'true' || false
-  );
+  const [darkMode, setDarkMode] = useState(false);
   const [data, setData] = useState({
     income: 0,
     expenses: 0,
@@ -28,6 +25,9 @@ const Home = () => {
   const [randomQuote] = useState(quotes[Math.floor(Math.random() * quotes.length)]);
 
   useEffect(() => {
+    const storedDarkMode = localStorage.getItem('darkMode') === 'true';
+    setDarkMode(storedDarkMode);
+    
     const fetchData = async () => {
       try {
         const user = JSON.parse(localStorage.getItem('user'));
@@ -61,10 +61,10 @@ const Home = () => {
     fetchData();
   }, []);
 
-  const formatCurrency = (amount) => {
+  const formatCurrency = (amount, currency = 'INR') => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'INR',
+      currency: currency,
       maximumFractionDigits: 0
     }).format(amount);
   };
@@ -75,23 +75,20 @@ const Home = () => {
   const { income, expenses, recentTransactions } = data;
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <Sidebar />
+    <div className={`flex h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
 
-      {/* Main Content */}
       <div className="flex-1 p-8 overflow-auto">
-        {/* Welcome Section */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} mb-2`}>
             Welcome back, {JSON.parse(localStorage.getItem('user'))?.user || 'User'}!
           </h1>
-          <p className="text-gray-600 italic">"{randomQuote}"</p>
+          <p className={`text-gray-600 italic ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+            "{randomQuote}"
+          </p>
         </div>
 
-        {/* Financial Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-xl shadow-sm border-t-4 border-blue-500">
+          <div className={`bg-white p-6 rounded-xl shadow-sm ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'} border-t-4 ${darkMode ? 'border-indigo-500' : 'border-blue-500'}`}>
             <h3 className="text-gray-500 font-medium">Total Income</h3>
             <p className="text-2xl font-bold mt-2 text-blue-600">
               {formatCurrency(income)}
@@ -99,7 +96,7 @@ const Home = () => {
             <p className="text-sm text-gray-500 mt-1">This month</p>
           </div>
           
-          <div className="bg-white p-6 rounded-xl shadow-sm border-t-4 border-red-500">
+          <div className={`bg-white p-6 rounded-xl shadow-sm ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'} border-t-4 ${darkMode ? 'border-red-500' : 'border-red-500'}`}>
             <h3 className="text-gray-500 font-medium">Total Expenses</h3>
             <p className="text-2xl font-bold mt-2 text-red-600">
               {formatCurrency(expenses)}
@@ -108,16 +105,15 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Recent Transactions */}
-        <div className="bg-white p-6 rounded-xl shadow-sm">
+        <div className={`bg-white p-6 rounded-xl shadow-sm ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Recent Transactions</h2>
+            <h2 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Recent Transactions</h2>
           </div>
           
           <div className="space-y-4">
             {recentTransactions.length > 0 ? (
               recentTransactions.map((transaction, index) => (
-                <div key={index} className="flex justify-between items-center p-3 hover:bg-gray-50 rounded-lg">
+                <div key={index} className={`flex justify-between items-center p-3 hover:bg-${darkMode ? 'gray-700' : 'gray-50'} rounded-lg`}>
                   <div className="flex items-center">
                     <div className={`p-3 rounded-full ${transaction.type === 'income' ? 'bg-green-100' : 'bg-red-100'}`}>
                       {transaction.type === 'income' ? (

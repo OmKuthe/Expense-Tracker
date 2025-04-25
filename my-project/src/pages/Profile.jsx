@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Sidebar from '../assets/Sidebar';
 import { Info, FileText, LogOut } from 'lucide-react';
 
 const Profile = () => {
@@ -16,7 +15,6 @@ const Profile = () => {
 
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-      <Sidebar />
 
       <div className="flex-1 p-8 overflow-auto">
         <h1 className="text-3xl font-bold mb-8 dark:text-white">Profile</h1>

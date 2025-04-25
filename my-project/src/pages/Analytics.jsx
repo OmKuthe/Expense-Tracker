@@ -3,7 +3,6 @@ import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis,
   Tooltip, Legend, LineChart, Line, CartesianGrid, ResponsiveContainer
 } from 'recharts';
-import Sidebar from '../assets/Sidebar';
 
 const COLORS = ['#00B894', '#FF6B6B', '#6C5CE7', '#00CEC9', '#FDCB6E', '#E84393'];
 
@@ -60,8 +59,6 @@ const Analytics = () => {
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
-      {/* Sidebar */}
-        <Sidebar />
 
 
       {/* Content Area */}

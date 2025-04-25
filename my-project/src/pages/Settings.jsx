@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Sidebar from '../assets/Sidebar';
 import axios from 'axios'; // Make sure to install axios if not already
 
 const Settings = () => {
@@ -146,7 +145,6 @@ const Settings = () => {
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
-      <Sidebar />
       
       <div className="flex-1 p-8 overflow-auto">
         <div className="flex justify-between items-center mb-8">

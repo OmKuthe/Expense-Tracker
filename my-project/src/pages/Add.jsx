@@ -1,7 +1,6 @@
 import React from "react";
 import { useState,useEffect } from "react";
 import { useParams } from "react-router-dom";
-import Sidebar from "../assets/Sidebar";
 const Add = () => {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -113,7 +112,6 @@ const Add = () => {
   
   return (
     <div className="flex">
-      <Sidebar />
       
       <div className="min-h-screen bg-gray-50 flex-1 p-4">
         <div className="max-w-4xl mx-auto space-y-6">

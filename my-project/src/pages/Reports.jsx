@@ -1,6 +1,5 @@
 import React, { useState,useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import Sidebar from '../assets/Sidebar';
 import axios from 'axios';
 
 const Reports = () => {
@@ -95,7 +94,6 @@ const Reports = () => {
   return (
     <div className="flex h-screen bg-gray-50">
     {/* Sidebar - fixed width */}
-    <Sidebar />
     
     {/* Main content area - takes remaining space */}
     <div className="flex-1 overflow-auto">

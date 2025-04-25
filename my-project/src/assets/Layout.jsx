@@ -1,15 +1,38 @@
-// src/components/Layout.jsx
+import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import Sidebar from './Sidebar';
+import Navigation from './Sidebar';
 
-const Layout = () => {
+const Layout = ({ darkMode = false }) => {
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+  const layoutColors = darkMode ? {
+    background: '#111827',
+  } : {
+    background: '#F9FAFB',
+  };
+
   return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar />
-      <div className="flex-1 overflow-auto">
-        <Outlet /> {/* This renders the current route's component */}
-      </div>
-    </div>
+    <div
+    className="min-h-screen flex flex-col"
+    style={{ backgroundColor: layoutColors.background }}
+  >
+    <Navigation 
+      darkMode={darkMode}
+      onMobileToggle={(isOpen) => setMobileNavOpen(isOpen)}
+    />
+  
+    <main className="flex-1 p-4">
+      <Outlet />
+    </main>
+  
+    {mobileNavOpen && (
+      <div 
+        className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+        onClick={() => setMobileNavOpen(false)}
+      />
+    )}
+  </div>
+  
   );
 };
 
